@@ -12,15 +12,19 @@ public class CarController : MonoBehaviour
     public Transform frontLeftWheelTransform;
     public Transform backLeftWheelTransform;
 
+    public Transform carCentreOfMassTransform;
+    public Rigidbody rigidbody;
+
     public float motorForce = 100f;
     public float steeringAngle = 30f;
+    public float brakeforce = 1000f;
 
     float verticalInput;
     float horizontalInput;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        rigidbody.centerOfMass = carCentreOfMassTransform.localPosition; // Set the center of mass to the car's center of mass transform
     }
 
     // Update is called once per frame
@@ -30,12 +34,31 @@ public class CarController : MonoBehaviour
         MotorForce();     // Then apply force
         UpdateWheels();   // Finally update visuals
         Steering();      // 👈 Steering logic
+        ApplyBrakes();  // 👈 Apply brakes if needed
 }
     void GetInput()
     {
         verticalInput = Input.GetAxis("Vertical");
         horizontalInput = Input.GetAxis("Horizontal");
 
+    }
+    void ApplyBrakes()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            frontRightWheelCollider.brakeTorque = brakeforce;
+            backRightWheelCollider.brakeTorque = brakeforce;
+            frontLeftWheelCollider.brakeTorque = brakeforce;
+            backLeftWheelCollider.brakeTorque = brakeforce;
+        }
+        else
+        {
+            frontRightWheelCollider.brakeTorque = 0f;
+            backRightWheelCollider.brakeTorque = 0f;
+            frontLeftWheelCollider.brakeTorque = 0f;
+            backLeftWheelCollider.brakeTorque = 0f;
+        }
+        
     }
     void MotorForce()
     {
