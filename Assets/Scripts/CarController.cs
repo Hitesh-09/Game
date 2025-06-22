@@ -2,28 +2,30 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    public WheelCollider frontRightWheelCollider;
-    public WheelCollider backRightWheelCollider;
-    public WheelCollider frontLeftWheelCollider;
-    public WheelCollider backLeftWheelCollider;
+    [SerializeField] private WheelCollider frontRightWheelCollider;
+    [SerializeField] private WheelCollider backRightWheelCollider;
+    [SerializeField] private WheelCollider frontLeftWheelCollider;
+    [SerializeField] private WheelCollider backLeftWheelCollider;
 
-    public Transform frontRightWheelTransform;
-    public Transform backRightWheelTransform;
-    public Transform frontLeftWheelTransform;
-    public Transform backLeftWheelTransform;
+    [SerializeField] private Transform frontRightWheelTransform;
+    [SerializeField] private Transform backRightWheelTransform;
+    [SerializeField] private Transform frontLeftWheelTransform;
+    [SerializeField] private Transform backLeftWheelTransform;
 
-    public Transform carCentreOfMassTransform;
-    public Rigidbody rigidbody;
+    [SerializeField] private Transform carCentreOfMassTransform;
+     
 
-    public float motorForce = 100f;
-    public float steeringAngle = 30f;
-    public float brakeforce = 1000f;
+    [SerializeField] private float motorForce = 100f;
+    [SerializeField] private float steeringAngle = 30f;
+    [SerializeField] private float brakeforce = 1000f;
 
-    float verticalInput;
-    float horizontalInput;
+    private Rigidbody rigidbody;
+    private float verticalInput;
+    private float horizontalInput;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        rigidbody = GetComponent<Rigidbody>();
         rigidbody.centerOfMass = carCentreOfMassTransform.localPosition; // Set the center of mass to the car's center of mass transform
     }
 
