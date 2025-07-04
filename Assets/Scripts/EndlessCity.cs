@@ -3,27 +3,22 @@ using UnityEngine;
 public class EndlessCity : MonoBehaviour
 {
     [SerializeField] Transform playerCarTransform;
-    [SerializeField] Transform otherCityTransform;
-    [SerializeField] float halfLength = 0f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    [SerializeField] Transform otherCityTransform; // City2 at 240
+    [SerializeField] float segmentLength = 240f; // Matches your city spacing
+    
     void Update()
     {
-        if (playerCarTransform.position.z > transform.position.z + halfLength + 10f)
+        // Determine which city is currently behind the player
+        Transform cityBehind = playerCarTransform.position.z > otherCityTransform.position.z 
+            ? otherCityTransform : transform;
+
+        // Check if player passed this city segment
+        if (playerCarTransform.position.z > cityBehind.position.z + segmentLength)
         {
-            transform.position = new Vector3(0, 0, playerCarTransform.position.z + halfLength * 2);
+            // Move the behind city ahead by both segments' length
+            cityBehind.position += Vector3.forward * (segmentLength * 2);
+            
+            Debug.Log($"Moved {cityBehind.name} to {cityBehind.position.z}");
         }
     }
 }
-
-
-
-
-
-
-
