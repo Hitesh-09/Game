@@ -52,6 +52,7 @@ public class CarController : MonoBehaviour
             backRightWheelCollider.brakeTorque = brakeforce;
             frontLeftWheelCollider.brakeTorque = brakeforce;
             backLeftWheelCollider.brakeTorque = brakeforce;
+            rigidbody.linearDamping = 1f;
         }
         else
         {
@@ -59,6 +60,7 @@ public class CarController : MonoBehaviour
             backRightWheelCollider.brakeTorque = 0f;
             frontLeftWheelCollider.brakeTorque = 0f;
             backLeftWheelCollider.brakeTorque = 0f;
+            rigidbody.linearDamping = 0.1f; 
         }
         
     }
