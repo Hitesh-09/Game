@@ -1,62 +1,48 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CarWaypoint : MonoBehaviour
 {
-    public Transform[] waypoints;
-    public float speed = 5f;
-    public float reachThreshold = 1.5f;
+    [Header("Waypoints the car will follow (assign manually in order)")]
+    public List<Transform> waypoints = new List<Transform>();
 
-    public Transform frontLeftWheel, frontRightWheel, rearLeftWheel, rearRightWheel;
+    [Header("Car Movement Settings")]
+    public float speed = 5f;
+    public float turnSpeed = 5f;
+    public float reachDistance = 1f;
+    public bool loop = true;
 
     private int currentWaypointIndex = 0;
-    private Rigidbody rb;
 
-    void Start()
+    void Update()
     {
-        rb = GetComponent<Rigidbody>();
-    }
+        if (waypoints.Count == 0) return;
 
-    void FixedUpdate()
-    {
-        if (waypoints.Length == 0) return;
+        Transform targetWaypoint = waypoints[currentWaypointIndex];
+        Vector3 direction = targetWaypoint.position - transform.position;
 
-        Transform target = waypoints[currentWaypointIndex];
-        Vector3 direction = (target.position - transform.position).normalized;
+        // Move forward
+        transform.position += direction.normalized * speed * Time.deltaTime;
 
-        // Move car using physics
-        rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
-
-        // Face the direction
+        // Rotate toward the waypoint
         if (direction != Vector3.zero)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, Time.fixedDeltaTime * 5f));
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
         }
 
-        // Check distance to waypoint
-        if (Vector3.Distance(transform.position, target.position) < reachThreshold)
+        // If reached the current waypoint, go to the next
+        if (direction.magnitude < reachDistance)
         {
             currentWaypointIndex++;
-            if (currentWaypointIndex >= waypoints.Length)
+
+            if (currentWaypointIndex >= waypoints.Count)
             {
-                enabled = false; // stop at last waypoint
+                if (loop)
+                    currentWaypointIndex = 0;
+                else
+                    enabled = false; // stop moving
             }
         }
-
-        RotateWheels();
-        if (rb.linearVelocity.magnitude > 0.1f)
-{
-    // rotate wheels
-}
-
-    }
-
-    void RotateWheels()
-    {
-        float rotationSpeed = speed * 360 * Time.deltaTime / (2 * Mathf.PI * 0.33f); // Approx wheel radius = 0.33m
-        frontLeftWheel.Rotate(Vector3.right, rotationSpeed);
-        frontRightWheel.Rotate(Vector3.right, rotationSpeed);
-        rearLeftWheel.Rotate(Vector3.right, rotationSpeed);
-        rearRightWheel.Rotate(Vector3.right, rotationSpeed);
     }
 }
